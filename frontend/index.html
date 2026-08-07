@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ByteVault - Your files. Your storage.</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    
+    <!-- Auth Container -->
+    <div id="auth-container" class="auth-container">
+        <div class="auth-box">
+            <div class="auth-header">
+                <i class="fa-solid fa-vault"></i>
+                <h1>ByteVault</h1>
+                <p>Your files. Your storage.</p>
+            </div>
+            
+            <form id="login-form" class="auth-form">
+                <h2>Login</h2>
+                <div class="input-group">
+                    <label for="login-username">Username</label>
+                    <input type="text" id="login-username" required>
+                </div>
+                <div class="input-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Sign In</button>
+                <p class="auth-switch">Don't have an account? <a href="#" id="show-register">Register</a></p>
+                <div id="login-error" class="error-msg"></div>
+            </form>
+
+            <form id="register-form" class="auth-form hidden">
+                <h2>Register</h2>
+                <div class="input-group">
+                    <label for="register-username">Username</label>
+                    <input type="text" id="register-username" required>
+                </div>
+                <div class="input-group">
+                    <label for="register-password">Password</label>
+                    <input type="password" id="register-password" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Create Account</button>
+                <p class="auth-switch">Already have an account? <a href="#" id="show-login">Login</a></p>
+                <div id="register-error" class="error-msg"></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- App Container -->
+    <div id="app-container" class="app-container hidden">
+        
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <i class="fa-solid fa-vault"></i>
+                <span>ByteVault</span>
+            </div>
+
+            <button id="btn-new" class="btn btn-new">
+                <i class="fa-solid fa-plus"></i> New
+            </button>
+
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" data-view="drive">
+                    <i class="fa-solid fa-hard-drive"></i> My Drive
+                </a>
+                <a href="#" class="nav-item" data-view="recent">
+                    <i class="fa-regular fa-clock"></i> Recent
+                </a>
+                <a href="#" class="nav-item" data-view="starred">
+                    <i class="fa-regular fa-star"></i> Starred
+                </a>
+                <a href="#" class="nav-item" data-view="trash">
+                    <i class="fa-solid fa-trash-can"></i> Trash
+                </a>
+            </nav>
+
+            <div class="storage-widget">
+                <div class="storage-info">
+                    <i class="fa-solid fa-cloud"></i>
+                    <span>Storage</span>
+                </div>
+                <div class="progress-bar">
+                    <div id="storage-progress" class="progress-fill" style="width: 0%;"></div>
+                </div>
+                <div id="storage-text" class="storage-text">Loading...</div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            
+            <!-- Header -->
+            <header class="header">
+                <div class="search-bar">
+                    <i class="fa-solid fa-search"></i>
+                    <input type="text" id="search-input" placeholder="Search in Drive...">
+                </div>
+
+                <div class="header-actions">
+                    <button id="btn-upload" class="icon-btn" title="Upload File">
+                        <i class="fa-solid fa-upload"></i>
+                    </button>
+                    <button id="btn-theme" class="icon-btn" title="Toggle Theme">
+                        <i class="fa-solid fa-moon"></i>
+                    </button>
+                    <div class="user-profile">
+                        <div class="avatar" id="user-avatar">U</div>
+                        <div class="dropdown-menu hidden" id="user-dropdown">
+                            <div class="dropdown-header">
+                                <strong id="display-username">User</strong>
+                            </div>
+                            <hr>
+                            <a href="#" id="btn-logout"><i class="fa-solid fa-sign-out-alt"></i> Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Breadcrumbs -->
+            <div class="breadcrumbs" id="breadcrumbs">
+                <a href="#" data-folder="root">My Drive</a>
+            </div>
+
+            <!-- View Controls -->
+            <div class="view-controls">
+                <h2 id="current-view-title">My Drive</h2>
+                <div class="view-toggles">
+                    <button id="btn-grid-view" class="icon-btn active"><i class="fa-solid fa-border-all"></i></button>
+                    <button id="btn-list-view" class="icon-btn"><i class="fa-solid fa-list"></i></button>
+                </div>
+            </div>
+
+            <!-- File Grid/List -->
+            <div id="file-container" class="file-grid">
+                <!-- Items injected here by JS -->
+            </div>
+
+            <!-- Empty State -->
+            <div id="empty-state" class="empty-state hidden">
+                <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23666'><path d='M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z'/></svg>" alt="Empty" width="64" height="64">
+                <h3>This folder is empty</h3>
+                <p>Drag files here or use the New button to upload.</p>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Hidden file input -->
+    <input type="file" id="file-input" multiple class="hidden">
+
+    <!-- Upload Progress Modal -->
+    <div id="upload-modal" class="modal hidden">
+        <div class="modal-content">
+            <h3>Uploading Files</h3>
+            <div id="upload-list" class="upload-list">
+                <!-- Upload items -->
+            </div>
+            <button id="btn-close-upload" class="btn btn-secondary">Close</button>
+        </div>
+    </div>
+
+    <!-- Context Menu -->
+    <div id="context-menu" class="context-menu hidden">
+        <a href="#" id="ctx-open"><i class="fa-solid fa-folder-open"></i> Open</a>
+        <a href="#" id="ctx-preview"><i class="fa-solid fa-eye"></i> Preview</a>
+        <a href="#" id="ctx-download"><i class="fa-solid fa-download"></i> Download</a>
+        <a href="#" id="ctx-rename"><i class="fa-solid fa-pen"></i> Rename</a>
+        <a href="#" id="ctx-star"><i class="fa-regular fa-star"></i> Star</a>
+        <a href="#" id="ctx-share"><i class="fa-solid fa-link"></i> Share</a>
+        <a href="#" id="ctx-restore"><i class="fa-solid fa-rotate-left"></i> Restore</a>
+        <hr>
+        <a href="#" id="ctx-delete" class="danger"><i class="fa-solid fa-trash"></i> Delete</a>
+    </div>
+
+    <!-- New Button Dropdown -->
+    <div id="new-dropdown" class="new-dropdown hidden">
+        <a href="#" id="new-folder-btn"><i class="fa-solid fa-folder-plus"></i> New Folder</a>
+        <a href="#" id="new-upload-btn"><i class="fa-solid fa-file-arrow-up"></i> Upload File</a>
+    </div>
+
+    <!-- New Folder Modal -->
+    <div id="folder-modal" class="modal hidden">
+        <div class="modal-content">
+            <h3>New Folder</h3>
+            <div class="input-group">
+                <label for="folder-name-input">Folder name</label>
+                <input type="text" id="folder-name-input" placeholder="Untitled folder">
+            </div>
+            <div class="modal-actions">
+                <button id="btn-cancel-folder" class="btn btn-secondary">Cancel</button>
+                <button id="btn-create-folder" class="btn btn-primary">Create</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rename Modal -->
+    <div id="rename-modal" class="modal hidden">
+        <div class="modal-content">
+            <h3>Rename</h3>
+            <div class="input-group">
+                <label for="rename-input">New name</label>
+                <input type="text" id="rename-input">
+            </div>
+            <div class="modal-actions">
+                <button id="btn-cancel-rename" class="btn btn-secondary">Cancel</button>
+                <button id="btn-confirm-rename" class="btn btn-primary">Rename</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Share Modal -->
+    <div id="share-modal" class="modal hidden">
+        <div class="modal-content">
+            <h3><i class="fa-solid fa-link"></i> Share Link</h3>
+            <p id="share-status" class="share-status">Generating link...</p>
+            <div class="share-link-box">
+                <input type="text" id="share-link-input" readonly>
+                <button id="btn-copy-share" class="btn btn-primary">Copy</button>
+            </div>
+            <div class="modal-actions">
+                <button id="btn-close-share" class="btn btn-secondary">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Preview Modal -->
+    <div id="preview-modal" class="modal hidden">
+        <div class="preview-overlay">
+            <div class="preview-header">
+                <span id="preview-filename">File Preview</span>
+                <button id="btn-close-preview" class="icon-btn"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div id="preview-body" class="preview-body">
+                <!-- Preview content injected here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="api.js"></script>
+    <script src="ui.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
