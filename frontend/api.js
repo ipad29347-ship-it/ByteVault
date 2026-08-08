@@ -5,7 +5,7 @@ const _hostname = window.location.hostname;
 const _isLocal = !_hostname || _hostname === 'localhost' || _hostname === '127.0.0.1';
 const API_BASE = _isLocal
     ? 'http://localhost:3000/api'
-    : `${window.location.origin}/api`; // In production, proxy or same-origin
+    : 'https://sleep-nominated-assurance-tennis.trycloudflare.com/api';
 
 class API {
     static getToken() {
